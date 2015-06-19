@@ -5,9 +5,10 @@ Next step is to write the outline parser, and after that, a simple GUI for easy 
 
 Possibly, convert backwards too.
 
+Note: Requires a monospace font to print properly
 
 EXAMPLE OUTPUT: 
-
+```
 ┌─ H1
 │  ├─ data11
 │  │  ├─ data111
@@ -24,4 +25,4 @@ EXAMPLE OUTPUT:
 │     └─ data311
 └─ H4
    └─ data41
-
+```
