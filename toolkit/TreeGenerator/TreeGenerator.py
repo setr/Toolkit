@@ -132,6 +132,8 @@ def testRun():
     temp = root.printAll()
     temp.encode("UTF-8")
     print temp
+    return temp
 
-    with codecs.open('testOUT', 'w', encoding="UTF-8") as f:
-        f.write(temp)
+tempStr = testRun()
+with codecs.open('testOUT', 'w', encoding="UTF-8") as f:
+    f.write(tempStr)
