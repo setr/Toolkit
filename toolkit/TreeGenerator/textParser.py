@@ -24,18 +24,19 @@ def getText(fileIn):
         exit("File does not exist")
 
 def getLevel(line):
-    if line[0] == HEADER:
-        count = 0
-        for char in line:
-            if char == HEADER:
-                count += 1
-            else:
-                break
-        return count
+    if len(line):
+        if line[0] == HEADER:
+            count = 0
+            for char in line:
+                if char == HEADER:
+                    count += 1
+                else:
+                    break
+            return count
     return None
 
-def cleanLine(line, count):
-    return line[count:]
+def cleanLine(line):
+    return line.strip(HEADER).strip()
 
 def findPreviousLevelAndAttach(parent, newNode):
     if parent.level == newNode.level-1:
@@ -59,7 +60,7 @@ def parseText(fileIn):
 
     for line in theText:
         level = getLevel(line)
-        line = cleanLine(line, level)
+        line = cleanLine(line)
         if level is not None:  # Happens when there's no HEADER on the line
             newNode = Node(line)
             newNode.level = level

@@ -78,14 +78,22 @@ class Node:
             printString += self.name
         level += 1
         first = True
+        if first and len(self.children) == 1:  # In the special case that the header has no siblings
+            soloHeader = True
+        else:
+            soloHeader = False
         for index, node in enumerate(self.children):
             hasSiblings = list(siblings)
             if level == 1:
-                if not first:  # don't want a newline for the very first header
-                    printString += "\n"
-                else:
+                if first and len(self.children) == 1:
                     first = False
-                tmpStr, iHaveSiblings = self.headerPrint(index, end)
+                    tmpStr, iHaveSiblings = "", False
+                else:
+                    if not first:  # don't want a newline for the very first header
+                        printString += "\n"
+                    else:
+                        first = False
+                    tmpStr, iHaveSiblings = self.headerPrint(index, end)
             else:
                 printString += self.vertLine(hasSiblings, level)
                 tmpStr, iHaveSiblings = self.normalPrint(index, end)
