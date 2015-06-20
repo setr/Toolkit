@@ -6,6 +6,7 @@ Next step is to write the outline parser, and after that, a simple GUI for easy 
 Possibly, convert backwards too.
 
 Note: Requires a monospace font to print properly
+
 Note: Are you serious github fuck your font
 
 EXAMPLE OUTPUT: 
