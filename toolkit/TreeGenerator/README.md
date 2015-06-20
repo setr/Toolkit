@@ -4,7 +4,8 @@
 `./textParser.py infile outfile` to parse the infile, and print to outfile. An absent outfile will print to screen instead. 
 
 Now comes with proper argsparse support! [See!](#argsparse)
-Next step is to write the outline parser, and after that, a simple GUI for easy use.
+
+Next step is to write a simple GUI for easy use, and then get an executable going for windows/mac/linux. p2exe, freeze and p2app respectively. GUI with wxpython.
 
 Possibly, convert backwards too.
 
