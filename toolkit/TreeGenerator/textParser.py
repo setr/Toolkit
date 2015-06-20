@@ -7,9 +7,11 @@ from TreeGenerator import Node
 from TreeGenerator import testCall
 from os.path import exists
 import codecs
-from sys import argv
+from sys import argv, exit
+import argparse
 
 HEADER = "*"
+VERBOSITY = False
 
 def getText(fileIn):
     theText = []
@@ -19,7 +21,7 @@ def getText(fileIn):
                 theText.append(line.strip())
         return theText
     else:
-        print "File does not exist"
+        exit("File does not exist")
 
 def getLevel(line):
     if line[0] == HEADER:
@@ -68,30 +70,78 @@ def parseText(fileIn):
             if Parent is None:
                 print "We shouldn't be here"
         else:
-            print "IGNORED LINE:", line
+            if VERBOSITY:
+                print "IGNORED LINE:", line
     return root
 
 
+
+def parseCommandLine():
+    parser = argparse.ArgumentParser(
+            prog="Tree-Generator",
+            description="Generates a tree representation of a hierarchy from the specified file")
+
+    # Positional Args
+    parser.add_argument(
+            "infile",
+            default=None,
+            nargs='?',
+            help="File to be parsed. Necessary unless -t is used")
+    parser.add_argument(
+            "outfile",
+            default=None,
+            nargs='?',
+            help="specify output file. Ifot specified, prints tree to screen")
+
+    # Flags
+    parser.add_argument(
+            "-d", "--default",
+            action="store_true",
+            help="sets outfile to infile_OUT")
+    parser.add_argument(
+            "-t", "--test",
+            action="store_true",
+            help="runs test outline")
+    parser.add_argument(
+            "-H", "--header",
+            default="*",
+            help="Header identifier used in the infile")
+    parser.add_argument(
+            "-v", "--verbose",
+            action="store_true",
+            help="increase verbosity ")
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    if len(argv) == 1:  # apparently an empty args is still of len 1
+
+    args = parseCommandLine()
+
+    # and now to deal with our options
+    HEADER = args.header
+    VERBOSITY = args.verbose
+
+    if args.test:
         testCall()
-        root = parseText("testIN.tmp")
-        root = root.printAll()
-        root.encode("UTF-8")
-        print root
-    elif len(argv) == 2:
-        fileIn = argv[1]
-        root = parseText(fileIn)
-        temp = root.printAll()
-        temp.encode("UTF-8")
-        print temp
-    elif len(argv) == 3:
-        fileIn = argv[1]
-        fileOut = argv[2]
-        root = parseText(fileIn)
-        temp = root.printAll()
-        temp.encode("UTF-8")
-        with codecs.open(fileOut, 'w', encoding="UTF-8") as w:
-            w.write(temp)
-# with codecs.open('testOUT', 'w', encoding='UTF-8') as w:
-#     w.write(tempStr)
+    elif args.infile is None:
+        exit("Expecting input file")
+    else:
+        if args.default:
+            outFile = args.infile + "_OUT"
+        else:
+            outFile = args.outfile
+
+        root = parseText(args.infile)
+        output = root.printAll()
+        output.encode("UTF-8")
+
+        if not len(output):
+            exit("Could not find any parseable lines")
+        if outFile is None:
+            print output
+        else:
+            with codecs.open(outFile, 'w', encoding="UTF-8") as w:
+                w.write(output)
+                w.write("\n")
+
+
