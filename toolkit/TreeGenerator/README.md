@@ -3,7 +3,7 @@
 
 `./textParser.py infile outfile` to parse the infile, and print to outfile. An absent outfile will print to screen instead. 
 
-Now comes with proper argsparse support! [See!](argsparse)
+Now comes with proper argsparse support! [See!](#argsparse)
 Next step is to write the outline parser, and after that, a simple GUI for easy use.
 
 Possibly, convert backwards too.
@@ -12,7 +12,7 @@ Note: Requires a monospace font to print properly
 
 Note: Are you serious github fuck your font
 
-### EXAMPLE OUTPUT: 
+#### EXAMPLES: 
 ```
 ┌─ H1
 │  ├─ data11
@@ -38,7 +38,7 @@ Tree Generator
       └─ ARGSPARSE:
 ```
 
-### ARGSPARSE:
+#### ARGSPARSE:
 ```
 usage: Tree-Generator [-h] [-d] [-t] [-H HEADER] [-v] [infile] [outfile]
 
