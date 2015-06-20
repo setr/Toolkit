@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 # encoding=UTF-8
 from sys import argv
 from os.path import exists
@@ -77,10 +77,14 @@ class Node:
         if level != 0:
             printString += self.name
         level += 1
+        first = True
         for index, node in enumerate(self.children):
             hasSiblings = list(siblings)
             if level == 1:
-                printString += "\n"
+                if not first:  # don't want a newline for the very first header
+                    printString += "\n"
+                else:
+                    first = False
                 tmpStr, iHaveSiblings = self.headerPrint(index, end)
             else:
                 printString += self.vertLine(hasSiblings, level)
@@ -134,6 +138,7 @@ def testRun():
     print temp
     return temp
 
-tempStr = testRun()
-with codecs.open('testOUT', 'w', encoding="UTF-8") as f:
-    f.write(tempStr)
+def testCall():
+    tempStr = testRun()
+    # with codecs.open('testOUT', 'w', encoding="UTF-8") as f:
+    #     f.write(tempStr)
