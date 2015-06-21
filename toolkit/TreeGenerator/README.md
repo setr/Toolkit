@@ -7,6 +7,7 @@ Now comes with proper argsparse support! [See!](#argsparse)
 
 Now comes with a GUI! [See!](#GUI) Written with wxPython
 
+Automagically copies the output to clipboard
 
 ####MISSION OF INTENT:
 - [x] Display tree properly
@@ -16,6 +17,7 @@ Now comes with a GUI! [See!](#GUI) Written with wxPython
 - [] Working C executables so no one has to bother with installing python
 - [] Possibly, convert backwards as well. 
 * Otherwise, maybe just save the last 30 or so converted outlines, and buttons to flip through them
+
 
 
 Note: Requires a monospace font to print properly
@@ -67,6 +69,7 @@ optional arguments:
                         Header identifier used in the infile
   -v, --verbose         increase verbosity
 ```
+Note: The blank textbox is the header designator. If left blank, it uses * as the default header identifier. If changed to #, then # will be the identifier. If ##, then a header level is only identified on every pair of #.
 ####GUI:
 ```
 

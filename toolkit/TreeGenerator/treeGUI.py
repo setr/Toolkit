@@ -13,8 +13,8 @@ class MainWindow(wx.Frame):
         self.doLayout()
 
     def createControls(self):
-        self.inputText = wx.TextCtrl(self, style=wx.TE_MULTILINE)
-        self.outputText = wx.TextCtrl(self, style=wx.TE_MULTILINE)
+        self.inputText = wx.TextCtrl(self, style=wx.TE_MULTILINE|wx.TE_DONTWRAP)
+        self.outputText = wx.TextCtrl(self, style=wx.TE_MULTILINE|wx.TE_DONTWRAP)
         font1 = wx.Font(11, wx.TELETYPE, wx.NORMAL, wx.NORMAL, False, u'Consolas')
         self.outputText.SetFont(font1)
 
@@ -96,6 +96,13 @@ class MainWindow(wx.Frame):
         out = root.printAll()
         out.encode("UTF-8")
         self.outputText.SetValue(out)
+
+        # Auto-copys output to clipboard
+        clipdata = wx.TextDataObject()
+        clipdata.SetText(out)
+        wx.TheClipboard.Open()
+        wx.TheClipboard.SetData(clipdata)
+        wx.TheClipboard.Close()
 
     def onOutputChange(self, event):
         pass
