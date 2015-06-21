@@ -10,72 +10,84 @@ import codecs
 from sys import argv, exit
 import argparse
 
-HEADER = "*"
-VERBOSITY = False
+class TextParser:
+    def __init__(self):
+        self.HEADER = "*"
+        self.VERBOSITY = False
 
-def getText(fileIn):
-    theText = []
-    if exists(fileIn):
-        with codecs.open(fileIn, 'r', encoding='UTF-8') as r:
-            for line in r:
-                theText.append(line.strip())
-        return theText
-    else:
-        exit("File does not exist")
-
-def getLevel(line):
-    if len(line):
-        if line[0] == HEADER:
-            count = 0
-            for char in line:
-                if char == HEADER:
-                    count += 1
-                else:
-                    break
-            return count
-    return None
-
-def cleanLine(line):
-    return line.strip(HEADER).strip()
-
-def findPreviousLevelAndAttach(parent, newNode):
-    if parent.level == newNode.level-1:
-        parent.addChild(newNode)
-        return parent
-    else:
-        return findPreviousLevelAndAttach(parent.Parent, newNode)
-
-def levelChanged(level, lastLevel):
-    if level == lastLevel:
-        return False
-    else:
-        return True
-
-def parseText(fileIn):
-    theText = getText(fileIn)
-    root = Node(None)
-    Parent = root
-    newNode = Node(None)
-    lastLevel = 0
-
-    for line in theText:
-        level = getLevel(line)
-        line = cleanLine(line)
-        if level is not None:  # Happens when there's no HEADER on the line
-            newNode = Node(line)
-            newNode.level = level
-            findPreviousLevelAndAttach(Parent, newNode)
-            if levelChanged(level, lastLevel):
-                Parent = newNode
-            lastLevel = level
-            if Parent is None:
-                print "We shouldn't be here"
+    def getText(self, fileIn):
+        theText = []
+        if exists(fileIn):
+            with codecs.open(fileIn, 'r', encoding='UTF-8') as r:
+                for line in r:
+                    theText.append(line.strip())
+            return theText
         else:
-            if VERBOSITY:
-                print "IGNORED LINE:", line
-    return root
+            exit("File does not exist")
 
+    def getLevel(self, line):
+        if len(line):
+            if line[0] == self.HEADER:
+                count = 0
+                for char in line:
+                    if char == self.HEADER:
+                        count += 1
+                    else:
+                        break
+                return count
+        return None
 
+    def cleanLine(self, line):
+        return line.strip(self.HEADER).lstrip()
+
+    def findPreviousLevelAndAttach(self, parent, newNode):
+        if self.VERBOSITY:
+            print "FOR NODE", newNode.name
+            print "LOOKING FOR", newNode.level
+            print "AT", parent.name
+        if parent.level < newNode.level:
+            parent.addChild(newNode)
+            return parent
+        else:
+            return self.findPreviousLevelAndAttach(parent.Parent, newNode)
+
+    def levelChanged(self, level, lastLevel):
+        if level == lastLevel:
+            return False
+        else:
+            return True
+
+    def parseText(self, theText):
+        root = Node(None)
+        Parent = root
+        newNode = Node(None)
+        lastLevel = 0
+
+        for line in theText:
+            level = self.getLevel(line)
+            line = self.cleanLine(line)
+            if level is not None:  # Happens when there's no HEADER on the line
+                newNode = Node(line)
+                newNode.level = level
+                self.findPreviousLevelAndAttach(Parent, newNode)
+                if self.levelChanged(level, lastLevel):
+                    Parent = newNode
+                lastLevel = level
+                if Parent is None:
+                    print "We shouldn't be here"
+            else:
+                if self.VERBOSITY:
+                    print "IGNORED LINE:", line
+        return root
+
+    def startParse(self, isFile, fileIn):
+        theText = ""
+        if isFile:
+            theText = self.getText(fileIn)
+        else:
+            theText = [line.strip() for line in fileIn.splitlines()]
+        root = self.parseText(theText)
+        return root
 
 def parseCommandLine():
     parser = argparse.ArgumentParser(
@@ -116,11 +128,12 @@ def parseCommandLine():
 
 if __name__ == "__main__":
 
+    parser = TextParser()
     args = parseCommandLine()
 
     # and now to deal with our options
-    HEADER = args.header
-    VERBOSITY = args.verbose
+    parser.HEADER = args.header
+    parser.VERBOSITY = args.verbose
 
     if args.test:
         testCall()
@@ -132,7 +145,7 @@ if __name__ == "__main__":
         else:
             outFile = args.outfile
 
-        root = parseText(args.infile)
+        root = parser.startParse(True, args.infile)
         output = root.printAll()
         output.encode("UTF-8")
 

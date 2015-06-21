@@ -5,9 +5,18 @@
 
 Now comes with proper argsparse support! [See!](#argsparse)
 
-Next step is to write a simple GUI for easy use, and then get an executable going for windows/mac/linux. p2exe, freeze and p2app respectively. GUI with wxpython.
+Now comes with a GUI! [See!](#GUI) Written with wxPython
 
-Possibly, convert backwards too.
+
+####MISSION OF INTENT:
+[x] Display tree properly
+[x] Parse text and display tree
+[x] Useful CLI
+[x] Useful GUI
+[] Working C executables so no one has to bother with installing python
+[] Possibly, convert backwards as well. 
+* Otherwise, maybe just save the last 30 or so converted outlines, and buttons to flip through them
+
 
 Note: Requires a monospace font to print properly
 
@@ -57,4 +66,9 @@ optional arguments:
   -H HEADER, --header HEADER
                         Header identifier used in the infile
   -v, --verbose         increase verbosity
+```
+####GUI:
+```
+
+
 ```

@@ -1,13 +1,13 @@
 #!/usr/bin/env python2.7
 import wx
 import os
-# from textParser import *
-
+from textParser import TextParser
 
 class MainWindow(wx.Frame):
     """ Our GUI menu """
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
+        self.parser = TextParser()
         self.createControls()
         self.bindEvents()
         self.doLayout()
@@ -15,8 +15,12 @@ class MainWindow(wx.Frame):
     def createControls(self):
         self.inputText = wx.TextCtrl(self, style=wx.TE_MULTILINE)
         self.outputText = wx.TextCtrl(self, style=wx.TE_MULTILINE)
+        font1 = wx.Font(11, wx.TELETYPE, wx.NORMAL, wx.NORMAL, False, u'Consolas')
+        self.outputText.SetFont(font1)
+
         self.convertButton = wx.Button(self, label="Convert!")
         self.openFileButton = wx.Button(self, label="Open File")
+        self.headerText = wx.TextCtrl(self)
 
     def bindEvents(self):
         # what in the fuck is \
@@ -24,7 +28,8 @@ class MainWindow(wx.Frame):
             [(self.convertButton, wx.EVT_BUTTON, self.onConvert),
              (self.inputText, wx.EVT_TEXT, self.onInputChange),
              (self.outputText, wx.EVT_TEXT, self.onOutputChange),
-             (self.openFileButton, wx.EVT_BUTTON, self.onOpen)]:
+             (self.openFileButton, wx.EVT_BUTTON, self.onOpen),
+             (self.headerText, wx.EVT_TEXT, self.onHeaderChange)]:
             control.Bind(event, handler)
 
     def doLayout(self):
@@ -43,7 +48,7 @@ class MainWindow(wx.Frame):
                             [(self.inputText, txtboxOptions),
                              (self.outputText, txtboxOptions),
                              (self.openFileButton, buttonOptions),
-                             (self.convertButton, buttonOptions)]:
+                             (self.headerText, buttonOptions)]:
             gridSizer.Add(control, **options)
 
         for control, options in \
@@ -72,18 +77,33 @@ class MainWindow(wx.Frame):
             errorDLG.ShowModal()
             errorDLG.Destroy()
 
+    def onHeaderChange(self, event):
+        print "HEPLP"
+        newHeader = self.headerText.GetValue().strip()
+        print newHeader
+        if newHeader is not None and newHeader != "":
+            self.parser.HEADER = newHeader
+        else:
+            self.parser.HEADER = "*"
+        self.onInputChange(event)
+
     def onConvert(self, event):
         raise NotImplementedError
 
     def onInputChange(self, event):
-        pass
+        text = self.inputText.GetValue()
+        root = self.parser.startParse(False, text)
+        out = root.printAll()
+        out.encode("UTF-8")
+        self.outputText.SetValue(out)
 
     def onOutputChange(self, event):
         pass
+
+
 if __name__ == '__main__':
     app = wx.App(0)
     frame = MainWindow(None, title='Demo with Notebook')
     frame.Show()
     app.MainLoop()
-
 
