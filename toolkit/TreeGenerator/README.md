@@ -14,8 +14,8 @@ Automagically copies the output to clipboard
 - [x] Parse text and display tree
 - [x] Useful CLI
 - [x] Useful GUI
-- [] Working C executables so no one has to bother with installing python
-- [] Possibly, convert backwards as well. 
+- [ ] Working C executables so no one has to bother with installing python
+- [ ] Possibly, convert backwards as well. 
 * Otherwise, maybe just save the last 30 or so converted outlines, and buttons to flip through them
 
 
