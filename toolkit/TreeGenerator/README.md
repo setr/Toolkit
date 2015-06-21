@@ -9,12 +9,12 @@ Now comes with a GUI! [See!](#GUI) Written with wxPython
 
 
 ####MISSION OF INTENT:
-[x] Display tree properly
-[x] Parse text and display tree
-[x] Useful CLI
-[x] Useful GUI
-[] Working C executables so no one has to bother with installing python
-[] Possibly, convert backwards as well. 
+- [x] Display tree properly
+- [x] Parse text and display tree
+- [x] Useful CLI
+- [x] Useful GUI
+- [] Working C executables so no one has to bother with installing python
+- [] Possibly, convert backwards as well. 
 * Otherwise, maybe just save the last 30 or so converted outlines, and buttons to flip through them
 
 
