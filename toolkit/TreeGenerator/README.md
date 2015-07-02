@@ -15,8 +15,11 @@ Automagically copies the output to clipboard
 - [x] Useful CLI
 - [x] Useful GUI
 - [ ] Working C executables so no one has to bother with installing python
+- [ ] OSX, Windows and Linux distribution build scripts
 - [ ] Possibly, convert backwards as well. 
-* Otherwise, maybe just save the last 30 or so converted outlines, and buttons to flip through them
+- Otherwise, maybe just save the last 30 or so converted outlines, and buttons to flip through them
+
+
 
 
 
