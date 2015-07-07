@@ -104,17 +104,17 @@ def parseCommandLine():
             "outfile",
             default=None,
             nargs='?',
-            help="specify output file. Ifot specified, prints tree to screen")
+            help="Specify output file. If not specified, prints tree to screen")
 
     # Flags
     parser.add_argument(
             "-d", "--default",
             action="store_true",
-            help="sets outfile to infile_OUT")
+            help="Sets outfile to infile_OUT")
     parser.add_argument(
             "-t", "--test",
             action="store_true",
-            help="runs test outline")
+            help="Runs test outline")
     parser.add_argument(
             "-H", "--header",
             default="*",
@@ -122,7 +122,7 @@ def parseCommandLine():
     parser.add_argument(
             "-v", "--verbose",
             action="store_true",
-            help="increase verbosity ")
+            help="Increase verbosity ")
     return parser.parse_args()
 
 
