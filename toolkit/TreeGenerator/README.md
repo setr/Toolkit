@@ -27,7 +27,7 @@ Note: Requires a monospace font to print properly
 
 Note: Are you serious github fuck your font
 
-#### EXAMPLES: 
+#### ORIGINAL: 
 ```
 *Header1
 **data1
@@ -62,7 +62,7 @@ GARBAGE
 *Header3
 *Header4 
 ```
-BECOMES 
+#### OUTPUT:
 ```
 ┌─ Header1
 │  ├─ data1
@@ -93,12 +93,6 @@ BECOMES
 │        └─ data113
 ├─ Header3
 └─ Header4
-
-
-Tree Generator
-   └─ Python script to pretty-print an outline.
-      ├─ EXAMPLE OUTPUT:
-      └─ ARGSPARSE:
 ```
 
 #### ARGSPARSE:
