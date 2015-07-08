@@ -18,14 +18,20 @@ class TextParser:
     def getText(self, fileIn):
         theText = []
         if exists(fileIn):
-            with codecs.open(fileIn, 'r', encoding='UTF-8') as r:
-                for line in r:
-                    theText.append(line.strip())
-            return theText
+            try:
+                with codecs.open(fileIn, 'r', encoding='UTF-8') as r:
+                    for line in r:
+                        theText.append(line.strip())
+                return theText
+            except IOError as e:
+                exit("IO Error:", e)
+            except ValueError as e:
+                exit("File contains non-UTF8 characters")
         else:
             exit("File does not exist")
 
-    def getLevel(self, line):
+    def getLevelandCleanLine(self, line):
+        cleanedLine = line.strip(self.HEADER).lstrip())
         if len(line):
             if line[0] == self.HEADER:
                 count = 0
@@ -34,11 +40,9 @@ class TextParser:
                         count += 1
                     else:
                         break
-                return count
-        return None
 
-    def cleanLine(self, line):
-        return line.strip(self.HEADER).lstrip()
+                return count, cleanedLine
+        return None, cleanedLine
 
     def findPreviousLevelAndAttach(self, parent, newNode):
         if self.VERBOSITY:
@@ -52,10 +56,8 @@ class TextParser:
             return self.findPreviousLevelAndAttach(parent.Parent, newNode)
 
     def levelChanged(self, level, lastLevel):
-        if level == lastLevel:
-            return False
-        else:
-            return True
+        """ Is the level the same as the one before? """
+        return True if level != lastLevel else return False
 
     def parseText(self, theText):
         root = Node(None)
@@ -64,8 +66,7 @@ class TextParser:
         lastLevel = 0
 
         for line in theText:
-            level = self.getLevel(line)
-            line = self.cleanLine(line)
+            level, line = self.getLevelandCleanLine(line)
             if level is not None:  # Happens when there's no HEADER on the line
                 newNode = Node(line)
                 newNode.level = level
@@ -137,21 +138,22 @@ if __name__ == "__main__":
 
     if args.test:
         testCall()
-    elif args.infile is None:
+    elif not args.infile:
         exit("Expecting input file")
     else:
-        if args.default:
-            outFile = args.infile + "_OUT"
-        else:
-            outFile = args.outfile
-
         root = parser.startParse(True, args.infile)
         output = root.printAll()
         output.encode("UTF-8")
 
-        if not len(output):
+        if not output:
             exit("Could not find any parseable lines")
-        if outFile is None:
+            
+        if args.default:
+            outFile = args.infile + "_OUT"
+        else:
+            outFile = args.outfile
+            
+        if not outFile:
             print output
         else:
             with codecs.open(outFile, 'w', encoding="UTF-8") as w:
