@@ -31,7 +31,7 @@ class TextParser:
             exit("File does not exist")
 
     def getLevelandCleanLine(self, line):
-        cleanedLine = line.strip(self.HEADER).lstrip())
+        cleanedLine = line.strip(self.HEADER).lstrip()
         if len(line):
             if line[0] == self.HEADER:
                 count = 0
@@ -57,7 +57,7 @@ class TextParser:
 
     def levelChanged(self, level, lastLevel):
         """ Is the level the same as the one before? """
-        return True if level != lastLevel else return False
+        return True if level != lastLevel else False
 
     def parseText(self, theText):
         root = Node(None)
