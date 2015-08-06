@@ -40,6 +40,7 @@ filetype plugin indent on               " required
 " Easy-Align
 
 colorscheme apprentice
+syntax on
 
 "set cursorline                              " hilight cursor line
 set more                                    " ---more--- like less
