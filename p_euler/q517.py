@@ -1,6 +1,9 @@
+#!/usr/bin/python
 __author__ = 'Neil Okhandiar'
 import math
+import itertools
 import time
+import multiprocessing
 
 
 def g(x, a, total):
@@ -23,14 +26,6 @@ def F(x):
     a = math.sqrt(x)
     return f(x, a, {})
 
-# def g(x, a, total):
-#     if x < a:
-#         return total+1
-#     else:
-#         total = g(x-1, a, total) + g(x-a, a, total)
-#         return total
-#         # return g(x-1, a) + g(x-a, a)
-
 # x < a  | return 1
 # x >= a | return g(x-1) + g(x-a)
 # Where is memo?
@@ -41,42 +36,94 @@ def F(x):
 #  same with x-a.
 
 def func(x, a):
-    stack = []
-    stack.append(x)
+    stack = [(x,x)]
+    #x, og_x
+    #stack.append()
     memo = {}
     total = 0
     memocount = 0
     while stack:
-        x = stack.pop(0)
+        x,og = stack.pop(0)
         if x < a:
             total+=1
-            memo[x+1] = total
-            memo[x+a] = total
+            memo[og] = total
+            memo[og] = total
         else:
             if x in memo:
                 memocount += 1
                 total+= memo[x]
             else:
-                stack.append(x-1)
-                stack.append(x-a)
+                stack.append((x-a,og))
+                stack.append((x-1,og))
     return total
 
 
-# every prime is indivisible
 # so we just need to check if a prime is divisible by any prior prime
 # since a prime is the lowest base number that could possibly act as multiple for any other number
-# Apparently known as the SIEVE OF ERASTOSTHENES
 # the SIEVE OF ATKINS is a modern improvement on this, but not implemented here.
-def primestill(x):
-    primelist = [2]
-    for i in range(3,int(x/2)):
-        isPrime = True
-        for prime in primelist:
-            if not i % prime:
-                break
-        else:
-            primelist.append(i)
+
+# don't need to look at primes over half the current number's value
+# because 2 is the lowest possible multiple..
+
+# def primestill(x):
+#     primelist = [2]
+#     for i in range(3,int(x/2)):
+#         isPrime = True
+#         for prime in primelist:
+#             if not i % prime:
+#                 break
+#         else:
+#             primelist.append(i)
+#     return primelist
+
+# known as the SIEVE OF ERASTOSTHENES
+def getPrimes(x):
+    maxPrime = int(math.sqrt(x))
+    numlist = {y:True for y in xrange(2, x, 2)}
+    
+    for i in xrange(3, maxPrime, 2):
+        if numlist[i]:
+            for y in xrange(i*i, x, i):
+                numlist[y] = False
+    primelist = [i for i in numlist if numlist[i]]
     return primelist
+                
+
+
+# PRIME GENERATOR USING SIEVE OF ERATOSTHENES
+# ORIGINAL AUTHOR: http://www.macdevcenter.com/pub/a/python/excerpt/pythonckbk_chap1/index1.html?page=2
+# THEN MODIFIED BY: http://stackoverflow.com/a/3796442 
+# COMMENTED BY ME
+def gen_primes():
+    compnumlist = {}  # composite number dict .... not primes
+    yield 2
+    # itertools.count makes an infinite generator
+    # islice is just skipping every other number (since all evens are not prime, excluding 2
+    # I think the only reasoning over xrange is that it lets
+    # us go up infinitely 
+    for num in itertools.islice(itertools.count(3), 0, None, 2):
+        p = compnumlist.pop(num, None) # get dict[num], if not found, return None.
+        if p is None:  # if its not in the dict, its a prime
+            compnumlist[num**2] = num  # mark the num^2 as a not-prime
+                                       # with its prime root
+            yield num
+        else:
+            # x <- smallest (N*p)+num that wasn't known as composite
+            # ie p+num, 2p+num, 3p+num ... Np+num
+            # x is a known composite, with p as its first-found prime
+            # since p is the first-found prime factor of num
+            # so now we can mark it as a composite number
+
+            # and since we're jumping by 2's (beginning at 3) to ignore even nums,
+            # we know we're only dealing with odds, both for num and for primes
+            # (who must be odd), so we can jump by 2p (2p+num, 4p+num, etc)
+            # because odd*odd + odd = even, while even*odd + odd = odd. 
+            # (odd*odd) = odd; odd + odd = even
+            # (even*odd) = even; even+odd=odd
+            x = num + 2*p
+            while x in compnumlist:
+                x += 2*p
+            compnumlist[x] = p
 
 def checkPrime(x, primelist):
     print(len(primelist))
@@ -88,22 +135,11 @@ def checkPrime(x, primelist):
         return True, primelist
 
 def getourprimes():
-    nums = list(range(10000000+1, 10010000-1)) #10000000<p<10010000
-    print("getting main list")
-    s= time.time()
-    primelist = primestill(10000000+1)
-    print("time:", time.time() - s)
-    print("done")
-    ourPrimes = []
-    # if the number is not divisible by any prime number before it (who are each indivisible), then
-    # this number must be prime.
-    for i in nums:
-        isPrime, primelist = checkPrime(i, primelist)
-        if isPrime:
-            ourPrimes.append(i)
-    return ourPrimes
-
-
+    primelist = []
+    for i in gen_primes():
+        if i < 10000000 and i > 10010000:  #10000000<p<10010000
+            primelist.append(i)
+    return primelist
 
 def startfunc(x):
     a = math.sqrt(x)
@@ -147,13 +183,38 @@ print("Since well, its getting the primes of the first 10 million numbers...")
 #     avg += time.time()-s
 # print(avg)
 
-s = time.time()
-ourprimes = getourprimes()
 total = 0
-for i in ourprimes:
-    total += F(i)
-print(total)
-print(time.time() - s)
+if __name__ == "__main__":
+    # ourprimes = [90, 99, 100, 30]
+    # s = time.time()
+    # total = 0
+    # pool = multiprocessing.Pool(multiprocessing.cpu_count())
+    # def callback(result):
+    #     global total
+    #     total+= result
+    # results = [pool.apply_async(startfunc,
+    # for i in ourprimes:
+    #     pool.apply_async(startfunc, args=(i,), callback=callback)
+    # pool.close()
+    # pool.join()
+    # print(totalV)
+
+    # print("multiprocess", time.time() - s)
+    # s = time.time()
+    # ourprimes = getourprimes()  # 10000000<p<10010000 
+    # print("prime generation", time.time()-s)
+    print "a"
+    print startfunc(90)
+    # s = time.time()
+    # total = 0
+    # ourprimes = [90]
+    # for i in ourprimes:
+    #     total += startfunc(i)
+    # print(total)
+    # print("single process", time.time() - s)
+
+
+
 
 # print(primestill(100))
 # s = time.time()
