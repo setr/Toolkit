@@ -36,25 +36,19 @@ def F(x):
 #  same with x-a.
 
 def func(x, a):
-    stack = [(x,x)]
-    #x, og_x
-    #stack.append()
+    stack = [x]
     memo = {}
     total = 0
-    memocount = 0
     while stack:
-        x,og = stack.pop(0)
-        if x < a:
+        x = stack.pop()
+        if x in memo:
+            total+= memo[x]
+        elif x < a:
             total+=1
-            memo[og] = total
-            memo[og] = total
         else:
-            if x in memo:
-                memocount += 1
-                total+= memo[x]
-            else:
-                stack.append((x-a,og))
-                stack.append((x-1,og))
+            stack.append(x-a)
+            stack.append(x-1)
+        memo[x] = total
     return total
 
 
@@ -75,19 +69,6 @@ def func(x, a):
 #         else:
 #             primelist.append(i)
 #     return primelist
-
-# known as the SIEVE OF ERASTOSTHENES
-def getPrimes(x):
-    maxPrime = int(math.sqrt(x))
-    numlist = {y:True for y in xrange(2, x, 2)}
-    
-    for i in xrange(3, maxPrime, 2):
-        if numlist[i]:
-            for y in xrange(i*i, x, i):
-                numlist[y] = False
-    primelist = [i for i in numlist if numlist[i]]
-    return primelist
-                
 
 
 # PRIME GENERATOR USING SIEVE OF ERATOSTHENES
@@ -169,6 +150,7 @@ def G2(x):
 
 print("Fully functional, but slow as shit when making the initial list of prime numbers")
 print("Since well, its getting the primes of the first 10 million numbers...")
+print("also the memoizer doesn't work correctly")
 # avg = 0
 # for i in range(1000):
 #     s = time.time()
@@ -203,7 +185,6 @@ if __name__ == "__main__":
     # s = time.time()
     # ourprimes = getourprimes()  # 10000000<p<10010000 
     # print("prime generation", time.time()-s)
-    print "a"
     print startfunc(90)
     # s = time.time()
     # total = 0
