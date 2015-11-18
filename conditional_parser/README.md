@@ -20,7 +20,6 @@ which serves as the input for the decision tree.
 
 and of course, parser.py does all the work. Reads, parses, understands, and decides. Spits out the final node.
 
-
 I highly doubt this is the most intelligent manner in which to write a language parser. A proper tokenizer probably would have made this a lot simpler, especially in regards to the (unavailable) handling of () precedence
 
 ## Vault_Condition
